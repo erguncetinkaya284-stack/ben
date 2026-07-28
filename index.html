@@ -1507,24 +1507,24 @@
                         <td>500</td>
                         <td>
                             <div class="counter-group">
-                                <button class="btn-ctrl btn-minus" onclick="updateRealEstate(this, -1, 30000)">-</button>
-                                <span class="counter-value" id="ev-dolu">450</span>
-                                <button class="btn-ctrl btn-plus" onclick="updateRealEstate(this, 1, 30000)">+</button>
+                                <button class="btn-ctrl btn-minus" onclick="updateRealEstate(this, -1)">-</button>
+                                <span class="counter-value" id="ev-dolu">0</span>
+                                <button class="btn-ctrl btn-plus" onclick="updateRealEstate(this, 1)">+</button>
                             </div>
                         </td>
-                        <td id="ev-gelir">13.500.000 ₺</td>
+                        <td id="ev-gelir">0 ₺</td>
                     </tr>
                     <tr>
                         <td>Dükkanlar</td>
                         <td>500</td>
                         <td>
                             <div class="counter-group">
-                                <button class="btn-ctrl btn-minus" onclick="updateRealEstate(this, -1, 30000)">-</button>
-                                <span class="counter-value" id="dukkan-dolu">480</span>
-                                <button class="btn-ctrl btn-plus" onclick="updateRealEstate(this, 1, 30000)">+</button>
+                                <button class="btn-ctrl btn-minus" onclick="updateRealEstate(this, -1)">-</button>
+                                <span class="counter-value" id="dukkan-dolu">0</span>
+                                <button class="btn-ctrl btn-plus" onclick="updateRealEstate(this, 1)">+</button>
                             </div>
                         </td>
-                        <td id="dukkan-gelir">14.400.000 ₺</td>
+                        <td id="dukkan-gelir">0 ₺</td>
                     </tr>
                 </tbody>
             </table>
@@ -1614,7 +1614,8 @@
             'teknolojiCategories','teknolojiItems','teknolojiItemIdCounter',
             'yazilimCategories','yazilimCategoryIdCounter','yazilimProjects','yazilimProjectIdCounter','yazilimTasks','yazilimTaskIdCounter','yazilimChecklistIdCounter',
             'books','bookIdCounter','bookPageIdCounter',
-            'yatirimCategories','yatirimItems','yatirimItemIdCounter','yatirimNotes'
+            'yatirimCategories','yatirimItems','yatirimItemIdCounter','yatirimNotes',
+            'evDolu','dukkanDolu'
         ];
 
         function saveAllData() {
@@ -1746,21 +1747,35 @@
             });
         }
 
-        // Sayaç artırma/eksiltme fonksiyonu (Tablolar için)
-        function updateRealEstate(btn, change, pricePerUnit) {
-            const container = btn.parentElement;
-            const span = container.querySelector('.counter-value');
-            let val = parseInt(span.innerText) + change;
-            if (val < 0) val = 0;
-            if (val > 500) val = 500;
-            span.innerText = val;
-            
-            // Gelir hesapla güncelle
-            const row = btn.closest('tr');
-            const gelirTd = row.lastElementChild;
-            let totalGelir = val * pricePerUnit;
-            gelirTd.innerText = totalGelir.toLocaleString('tr-TR') + " ₺";
-            calculateTotalRevenue();
+        // ================= GAYRİMENKUL TAKİBİ =================
+        // Önceden bu sayaçlar sadece HTML metniydi (hiçbir JS değişkenine bağlı değildi),
+        // bu yüzden sayfa yenilenince kaydedilmiş veriyle değil, HTML dosyasına gömülü
+        // sabit başlangıç metniyle (450/480) açılıyordu. Artık gerçek değişkenlere bağlı
+        // ve ALL_STATE_VARS üzerinden kalıcı olarak saklanıyor.
+        let evDolu = 0;
+        let dukkanDolu = 0;
+        const REAL_ESTATE_TOTAL = 500;
+        const REAL_ESTATE_PRICE = 30000;
+
+        function updateRealEstate(btn, change) {
+            const isEv = btn.closest('tr').querySelector('.counter-value').id === 'ev-dolu';
+            if (isEv) {
+                evDolu = Math.min(REAL_ESTATE_TOTAL, Math.max(0, evDolu + change));
+            } else {
+                dukkanDolu = Math.min(REAL_ESTATE_TOTAL, Math.max(0, dukkanDolu + change));
+            }
+            renderGayrimenkul();
+            scheduleSave();
+        }
+
+        function renderGayrimenkul() {
+            const evSpan = document.getElementById('ev-dolu');
+            const dukkanSpan = document.getElementById('dukkan-dolu');
+            if (!evSpan || !dukkanSpan) return;
+            evSpan.innerText = evDolu;
+            dukkanSpan.innerText = dukkanDolu;
+            document.getElementById('ev-gelir').innerText = (evDolu * REAL_ESTATE_PRICE).toLocaleString('tr-TR') + ' ₺';
+            document.getElementById('dukkan-gelir').innerText = (dukkanDolu * REAL_ESTATE_PRICE).toLocaleString('tr-TR') + ' ₺';
         }
 
         function calculateTotalRevenue() {
@@ -5523,6 +5538,7 @@
             renderCombatCategoryOptions();
             renderCombatItems();
             renderBooks();
+            renderGayrimenkul();
         }
 
         // ÖNEMLİ (refresh/kilitlenme düzeltmesi): onload artık ASENKRON VERİ YÜKLEMEYİ
