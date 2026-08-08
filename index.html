@@ -675,6 +675,45 @@
             </div>
             <div class="recipe-list" id="ibadet-list"></div>
         </div>
+
+        <!-- GÜNLÜK PROGRAM (SAATLİK) — İbadet'in hemen altında -->
+        <!-- GÜNLÜK PROGRAM & ALIŞKANLIK TAKİBİ (birleşik modül) -->
+        <div class="module-box" id="module-gunluk">
+            <div class="module-header">
+                <h2><span class="toggle-arrow" onclick="toggleModule(this)">▶</span>⏰🔥 Günlük Program & Alışkanlık Takibi</h2>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <span style="font-size:0.8rem; color:var(--text-muted);" id="schedule-count">0 madde</span>
+                    <button class="btn-action" onclick="toggleScheduleView()" id="schedule-view-toggle">📊 Çizelge Görünümü</button>
+                </div>
+            </div>
+
+            <!-- Madde ekleme formu -->
+            <div class="recipe-form">
+                <div class="form-row">
+                    <select id="schedule-source-select" onchange="applyScheduleSourceSelection()"></select>
+                </div>
+                <div class="form-row">
+                    <input type="time" id="schedule-time" placeholder="Saat (opsiyonel)">
+                    <input type="text" id="schedule-name" placeholder="Ne? (örn: Sabah Namazı, Diş Fırçalama, YKS Matematik)">
+                </div>
+                <div class="form-row">
+                    <input type="text" id="schedule-target" placeholder="Günde kaç kez? (örn: 1, 2, 8...)" value="1">
+                </div>
+                <button class="btn-action btn-primary" id="schedule-save-btn" onclick="saveScheduleItem()">Kaydet</button>
+            </div>
+
+            <!-- Liste görünümü: saatli program + saatsiz alışkanlıklar -->
+            <div id="schedule-list-section">
+                <h3 style="margin:14px 0 6px 0; font-size:0.9rem; color:var(--text-muted);">🕐 Saatli Program</h3>
+                <div class="recipe-list" id="schedule-timed-list"></div>
+
+                <h3 style="margin:16px 0 6px 0; font-size:0.9rem; color:var(--text-muted);">🔥 Saatsiz Alışkanlıklar</h3>
+                <div class="recipe-list" id="schedule-untimed-list"></div>
+            </div>
+
+            <!-- Çizelge (tablo) görünümü -->
+            <div id="schedule-table-wrap" style="display:none;"></div>
+        </div>
         <!-- 2. FİTNESS TAKİBİ — namaz sonrası, günde 5 vakitle birlikte -->
 <div class="module-box" id="module-fitness">
             <div class="module-header">
@@ -884,6 +923,42 @@
 
             <!-- Kayıt listesi -->
             <div class="recipe-list" id="instrument-list"></div>
+        </div>
+
+        <!-- TASARIM/ÇİZİM PROGRAMLARI ÖĞRENİYORUM — Enstrüman'ın hemen altında -->
+        <div class="module-box" id="module-tasarim">
+            <div class="module-header">
+                <h2><span class="toggle-arrow" onclick="toggleModule(this)">▶</span>🎨 Tasarım Programları Öğreniyorum</h2>
+                <span style="font-size:0.8rem; color:var(--text-muted);" id="tasarim-count">0 kayıt</span>
+            </div>
+
+            <!-- Kategori yönetimi -->
+            <div class="form-row">
+                <input type="text" id="new-tasarim-cat" placeholder="Örn: Photoshop, AutoCAD, Illustrator...">
+                <button class="btn-action btn-primary" onclick="addTasarimCategory('program')">+ Program Ekle</button>
+            </div>
+            <div class="category-tags" id="tasarim-program-list"></div>
+
+            <div class="form-row">
+                <input type="text" id="new-tasarim-topic" placeholder="Örn: Katmanlar, Çizim Komutları, Render...">
+                <button class="btn-action btn-primary" onclick="addTasarimCategory('topic')">+ Konu Ekle</button>
+            </div>
+            <div class="category-tags" id="tasarim-topic-list"></div>
+
+            <!-- Ders ekleme formu -->
+            <div class="recipe-form">
+                <input type="text" id="tasarim-title" placeholder="Başlık (örn: Layer/Katman Kullanımı)">
+                <textarea id="tasarim-content" placeholder="Ders içeriği — o anki yaptığın dersi buraya kopyalayabilirsin..."></textarea>
+                <input type="text" id="tasarim-youtube" placeholder="YouTube linki (opsiyonel)">
+                <div class="form-row">
+                    <select id="tasarim-program-cat"></select>
+                    <select id="tasarim-topic-cat"></select>
+                </div>
+                <button class="btn-action btn-primary" id="tasarim-save-btn" onclick="saveTasarimItem()">Kaydet</button>
+            </div>
+
+            <!-- Kayıt listesi -->
+            <div class="recipe-list" id="tasarim-list"></div>
         </div>
         <!-- 11. OYUN HAVALARI & MÜZİK — bazı zamanlar -->
 <div class="module-box" id="module-oyun">
@@ -1504,24 +1579,24 @@
                 <tbody>
                     <tr>
                         <td>Konutlar</td>
-                        <td>0</td>
+                        <td>500</td>
                         <td>
                             <div class="counter-group">
-                                <button class="btn-ctrl btn-minus" onclick="updateRealEstate(this, -1)">-</button>
+                                <button class="btn-ctrl btn-minus" onclick="updateRealEstate(this, -1, 30000)">-</button>
                                 <span class="counter-value" id="ev-dolu">0</span>
-                                <button class="btn-ctrl btn-plus" onclick="updateRealEstate(this, 1)">+</button>
+                                <button class="btn-ctrl btn-plus" onclick="updateRealEstate(this, 1, 30000)">+</button>
                             </div>
                         </td>
                         <td id="ev-gelir">0 ₺</td>
                     </tr>
                     <tr>
                         <td>Dükkanlar</td>
-                        <td>0</td>
+                        <td>500</td>
                         <td>
                             <div class="counter-group">
-                                <button class="btn-ctrl btn-minus" onclick="updateRealEstate(this, -1)">-</button>
+                                <button class="btn-ctrl btn-minus" onclick="updateRealEstate(this, -1, 30000)">-</button>
                                 <span class="counter-value" id="dukkan-dolu">0</span>
-                                <button class="btn-ctrl btn-plus" onclick="updateRealEstate(this, 1)">+</button>
+                                <button class="btn-ctrl btn-plus" onclick="updateRealEstate(this, 1, 30000)">+</button>
                             </div>
                         </td>
                         <td id="dukkan-gelir">0 ₺</td>
@@ -1533,7 +1608,7 @@
 
     <script>
         // Modül kutusunu aç/kapa (üçgen ikonuna tıklanınca) ve durumu kalıcı olarak kaydet
-        const MODULE_IDS = ['module-ibadet', 'module-fitness', 'module-spor', 'module-dovus', 'module-kpss', 'module-yks', 'module-dil', 'module-tarif', 'module-enstruman', 'module-oyun', 'module-tarim', 'module-blog', 'module-kitap', 'module-yazilim', 'module-kiraathane', 'module-cari', 'module-yatirim', 'module-sut', 'module-manav', 'module-et', 'module-tekstil', 'module-teknoloji', 'module-arac', 'module-gayrimenkul'];
+        const MODULE_IDS = ['module-ibadet', 'module-gunluk', 'module-fitness', 'module-spor', 'module-dovus', 'module-kpss', 'module-yks', 'module-dil', 'module-tarif', 'module-enstruman', 'module-tasarim', 'module-oyun', 'module-tarim', 'module-blog', 'module-kitap', 'module-yazilim', 'module-kiraathane', 'module-cari', 'module-yatirim', 'module-sut', 'module-manav', 'module-et', 'module-tekstil', 'module-teknoloji', 'module-arac', 'module-gayrimenkul'];
 
         function toggleModule(arrow) {
             const box = arrow.closest('.module-box');
@@ -1593,6 +1668,10 @@
 
         // Kalıcı olarak saklanacak tüm modül verilerinin (kategoriler, projeler, görevler, satışlar, sayaçlar vb.) listesi
         const ALL_STATE_VARS = [
+            'scheduleItems','scheduleIdCounter','scheduleViewMode',
+            'habits','habitIdCounter',
+            'programItems','programIdCounter','programViewMode',
+            'tasarimProgramCategories','tasarimTopicCategories','tasarimItems','tasarimIdCounter',
             'productCatalog','catalogIdCounter','salesTables','tableIdCounter','salesTabs','tabIdCounter','itemIdCounter',
             'timeCategories','typeCategories','recipes','recipeIdCounter',
             'langCategories','topicCategories','langItems','langIdCounter',
@@ -1615,7 +1694,7 @@
             'yazilimCategories','yazilimCategoryIdCounter','yazilimProjects','yazilimProjectIdCounter','yazilimTasks','yazilimTaskIdCounter','yazilimChecklistIdCounter',
             'books','bookIdCounter','bookPageIdCounter',
             'yatirimCategories','yatirimItems','yatirimItemIdCounter','yatirimNotes',
-            'evDolu','dukkanDolu'
+            'evDoluCount','dukkanDoluCount'
         ];
 
         function saveAllData() {
@@ -1642,6 +1721,7 @@
                         eval(name + ' = snapshot["' + name + '"];');
                     }
                 });
+                migrateLegacySchedule();
             } catch (e) { /* bozuk/eksik veri varsa sessizce geç, uygulama boş başlar */ }
         }
 
@@ -1707,6 +1787,12 @@
             }
         }
 
+        // Eski yedeklerde farklı isimle kaydedilmiş alanlar için eşleme (geriye dönük uyumluluk)
+        const LEGACY_STATE_ALIASES = {
+            'evDolu': 'evDoluCount',
+            'dukkanDolu': 'dukkanDoluCount'
+        };
+
         function importAllData(file) {
             if (!file) return;
             if (!confirm('İçe aktarınca paneldeki mevcut veriler, dosyadaki verilerle değiştirilecek. Devam edilsin mi?')) {
@@ -1717,11 +1803,27 @@
             reader.onload = function(e) {
                 try {
                     const snapshot = JSON.parse(e.target.result);
+
+                    // Eski alan adlarını (varsa) güncel isimlere kopyala, mevcut isim boşsa
+                    Object.keys(LEGACY_STATE_ALIASES).forEach(oldName => {
+                        const newName = LEGACY_STATE_ALIASES[oldName];
+                        if (Object.prototype.hasOwnProperty.call(snapshot, oldName) &&
+                            !Object.prototype.hasOwnProperty.call(snapshot, newName)) {
+                            snapshot[newName] = snapshot[oldName];
+                        }
+                    });
+
                     ALL_STATE_VARS.forEach(name => {
                         if (Object.prototype.hasOwnProperty.call(snapshot, name)) {
                             eval(name + ' = snapshot["' + name + '"];');
                         }
                     });
+                    // Eski (birleştirme öncesi) formatta bir yedekse scheduleItems yok demektir —
+                    // bu durumda göçü zorla tetikle ki programItems/habits verisi kaybolmasın
+                    if (!Object.prototype.hasOwnProperty.call(snapshot, 'scheduleItems')) {
+                        scheduleItems = [];
+                    }
+                    migrateLegacySchedule();
                     renderAllModules();
                     saveAllData();
                     alert('İçe aktarma tamamlandı, panel güncellendi.');
@@ -1747,35 +1849,29 @@
             });
         }
 
-        // ================= GAYRİMENKUL TAKİBİ =================
-        // Önceden bu sayaçlar sadece HTML metniydi (hiçbir JS değişkenine bağlı değildi),
-        // bu yüzden sayfa yenilenince kaydedilmiş veriyle değil, HTML dosyasına gömülü
-        // sabit başlangıç metniyle (450/480) açılıyordu. Artık gerçek değişkenlere bağlı
-        // ve ALL_STATE_VARS üzerinden kalıcı olarak saklanıyor.
-        let evDolu = 0;
-        let dukkanDolu = 0;
-        const REAL_ESTATE_TOTAL = 500;
-        const REAL_ESTATE_PRICE = 30000;
+        // Sayaç artırma/eksiltme fonksiyonu (Gayrimenkul tablosu için)
+        let evDoluCount = 0;
+        let dukkanDoluCount = 0;
 
-        function updateRealEstate(btn, change) {
-            const isEv = btn.closest('tr').querySelector('.counter-value').id === 'ev-dolu';
-            if (isEv) {
-                evDolu = Math.min(REAL_ESTATE_TOTAL, Math.max(0, evDolu + change));
-            } else {
-                dukkanDolu = Math.min(REAL_ESTATE_TOTAL, Math.max(0, dukkanDolu + change));
-            }
+        function updateRealEstate(btn, change, pricePerUnit) {
+            const container = btn.parentElement;
+            const span = container.querySelector('.counter-value');
+            let val = parseInt(span.innerText) + change;
+            if (val < 0) val = 0;
+            if (val > 500) val = 500;
+
+            if (span.id === 'ev-dolu') evDoluCount = val;
+            if (span.id === 'dukkan-dolu') dukkanDoluCount = val;
+
             renderGayrimenkul();
-            scheduleSave();
         }
 
         function renderGayrimenkul() {
-            const evSpan = document.getElementById('ev-dolu');
-            const dukkanSpan = document.getElementById('dukkan-dolu');
-            if (!evSpan || !dukkanSpan) return;
-            evSpan.innerText = evDolu;
-            dukkanSpan.innerText = dukkanDolu;
-            document.getElementById('ev-gelir').innerText = (evDolu * REAL_ESTATE_PRICE).toLocaleString('tr-TR') + ' ₺';
-            document.getElementById('dukkan-gelir').innerText = (dukkanDolu * REAL_ESTATE_PRICE).toLocaleString('tr-TR') + ' ₺';
+            document.getElementById('ev-dolu').innerText = evDoluCount;
+            document.getElementById('dukkan-dolu').innerText = dukkanDoluCount;
+            document.getElementById('ev-gelir').innerText = (evDoluCount * 30000).toLocaleString('tr-TR') + " ₺";
+            document.getElementById('dukkan-gelir').innerText = (dukkanDoluCount * 30000).toLocaleString('tr-TR') + " ₺";
+            calculateTotalRevenue();
         }
 
         function calculateTotalRevenue() {
@@ -2161,6 +2257,164 @@
                     <div class="recipe-actions">
                         <button class="btn-action" onclick="editRecipe(${r.id})">Düzenle</button>
                         <button class="btn-action" style="color:var(--accent-red)" onclick="deleteRecipe(${r.id})">Sil</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ================= TASARIM/ÇİZİM PROGRAMLARI ÖĞRENİYORUM =================
+        let tasarimProgramCategories = [];
+        let tasarimTopicCategories = [];
+        let tasarimItems = [];
+        let editingTasarimId = null;
+        let tasarimIdCounter = 1;
+
+        function addTasarimCategory(kind) {
+            const inputId = kind === 'program' ? 'new-tasarim-cat' : 'new-tasarim-topic';
+            const input = document.getElementById(inputId);
+            const value = input.value.trim();
+            if (!value) return;
+
+            const list = kind === 'program' ? tasarimProgramCategories : tasarimTopicCategories;
+            if (list.includes(value)) { input.value = ''; return; }
+            list.push(value);
+            input.value = '';
+            renderTasarimCategories();
+            renderTasarimCategoryOptions();
+        }
+
+        function removeTasarimCategory(kind, value) {
+            if (kind === 'program') {
+                tasarimProgramCategories = tasarimProgramCategories.filter(c => c !== value);
+            } else {
+                tasarimTopicCategories = tasarimTopicCategories.filter(c => c !== value);
+            }
+            renderTasarimCategories();
+            renderTasarimCategoryOptions();
+        }
+
+        function renderTasarimCategories() {
+            const progWrap = document.getElementById('tasarim-program-list');
+            progWrap.innerHTML = tasarimProgramCategories.map(c => `
+                <span class="category-tag lang-tag">${c}<button onclick="removeTasarimCategory('program', '${c.replace(/'/g, "\\'")}')">✕</button></span>
+            `).join('') || '<span style="color:var(--text-muted); font-size:0.8rem;">Henüz program eklenmedi.</span>';
+
+            const topicWrap = document.getElementById('tasarim-topic-list');
+            topicWrap.innerHTML = tasarimTopicCategories.map(c => `
+                <span class="category-tag type-tag">${c}<button onclick="removeTasarimCategory('topic', '${c.replace(/'/g, "\\'")}')">✕</button></span>
+            `).join('') || '<span style="color:var(--text-muted); font-size:0.8rem;">Henüz konu eklenmedi.</span>';
+        }
+
+        function renderTasarimCategoryOptions() {
+            const progSelect = document.getElementById('tasarim-program-cat');
+            const topicSelect = document.getElementById('tasarim-topic-cat');
+            progSelect.innerHTML = tasarimProgramCategories.length
+                ? tasarimProgramCategories.map(c => `<option value="${c}">${c}</option>`).join('')
+                : '<option value="">Önce program ekle</option>';
+            topicSelect.innerHTML = tasarimTopicCategories.length
+                ? tasarimTopicCategories.map(c => `<option value="${c}">${c}</option>`).join('')
+                : '<option value="">Önce konu ekle</option>';
+        }
+
+        function saveTasarimItem() {
+            const title = document.getElementById('tasarim-title').value.trim();
+            const content = document.getElementById('tasarim-content').value.trim();
+            const youtube = document.getElementById('tasarim-youtube').value.trim();
+            const programCat = document.getElementById('tasarim-program-cat').value;
+            const topicCat = document.getElementById('tasarim-topic-cat').value;
+
+            if (!title) { alert('Başlık boş olamaz.'); return; }
+
+            if (editingTasarimId !== null) {
+                const item = tasarimItems.find(i => i.id === editingTasarimId);
+                if (item) {
+                    item.title = title;
+                    item.content = content;
+                    item.youtube = youtube;
+                    item.programCat = programCat;
+                    item.topicCat = topicCat;
+                }
+                editingTasarimId = null;
+                document.getElementById('tasarim-save-btn').innerText = 'Kaydet';
+            } else {
+                tasarimItems.push({
+                    id: tasarimIdCounter++,
+                    title, content, youtube, programCat, topicCat,
+                    doneDate: null
+                });
+            }
+
+            document.getElementById('tasarim-title').value = '';
+            document.getElementById('tasarim-content').value = '';
+            document.getElementById('tasarim-youtube').value = '';
+            renderTasarim();
+        }
+
+        function editTasarimItem(id) {
+            const item = tasarimItems.find(i => i.id === id);
+            if (!item) return;
+            document.getElementById('tasarim-title').value = item.title;
+            document.getElementById('tasarim-content').value = item.content;
+            document.getElementById('tasarim-youtube').value = item.youtube;
+            document.getElementById('tasarim-program-cat').value = item.programCat;
+            document.getElementById('tasarim-topic-cat').value = item.topicCat;
+            editingTasarimId = id;
+            document.getElementById('tasarim-save-btn').innerText = 'Güncelle';
+            document.getElementById('tasarim-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function deleteTasarimItem(id) {
+            tasarimItems = tasarimItems.filter(i => i.id !== id);
+            if (editingTasarimId === id) {
+                editingTasarimId = null;
+                document.getElementById('tasarim-save-btn').innerText = 'Kaydet';
+            }
+            renderTasarim();
+        }
+
+        function toggleTasarimDone(id, checked) {
+            const item = tasarimItems.find(i => i.id === id);
+            if (!item) return;
+            const today = new Date().toISOString().slice(0, 10);
+            item.doneDate = checked ? today : null;
+            renderTasarim();
+        }
+
+        function renderTasarim() {
+            renderTasarimCategories();
+            renderTasarimCategoryOptions();
+
+            const wrap = document.getElementById('tasarim-list');
+            const today = new Date().toISOString().slice(0, 10);
+
+            document.getElementById('tasarim-count').innerText = tasarimItems.length + ' kayıt';
+
+            if (!tasarimItems.length) {
+                wrap.innerHTML = '<span style="color:var(--text-muted); font-size:0.85rem;">Henüz kayıt eklenmedi.</span>';
+                return;
+            }
+
+            wrap.innerHTML = tasarimItems.map(i => {
+                const doneToday = i.doneDate === today;
+                const catsHtml = [
+                    i.programCat ? `<span class="category-tag lang-tag">${i.programCat}</span>` : '',
+                    i.topicCat ? `<span class="category-tag type-tag">${i.topicCat}</span>` : ''
+                ].join('');
+                const ytHtml = i.youtube ? `<a class="recipe-yt" href="${i.youtube}" target="_blank" rel="noopener">▶ YouTube'da izle</a>` : '';
+
+                return `
+                <div class="recipe-card ${doneToday ? 'done-today' : ''}">
+                    <h3>${i.title}</h3>
+                    <div class="recipe-cats">${catsHtml}</div>
+                    <div class="recipe-content">${i.content ? i.content.replace(/</g, '&lt;') : ''}</div>
+                    ${ytHtml}
+                    <label class="done-check">
+                        <input type="checkbox" ${doneToday ? 'checked' : ''} onchange="toggleTasarimDone(${i.id}, this.checked)">
+                        Bugün pratik yaptım
+                    </label>
+                    <div class="recipe-actions">
+                        <button class="btn-action" onclick="editTasarimItem(${i.id})">Düzenle</button>
+                        <button class="btn-action" style="color:var(--accent-red)" onclick="deleteTasarimItem(${i.id})">Sil</button>
                     </div>
                 </div>`;
             }).join('');
@@ -2942,6 +3196,272 @@
 
             document.getElementById('ibadet-count').innerText = `Bugün ${doneCount}/5 vakit`;
         }
+
+        // ================= GÜNLÜK PROGRAM (SAATLİK) =================
+        // ================= GÜNLÜK PROGRAM & ALIŞKANLIK TAKİBİ (birleşik) =================
+        let scheduleItems = []; // {id, time (opsiyonel 'HH:MM' ya da ''), name, target, log: {'YYYY-MM-DD': count}}
+        let scheduleIdCounter = 1;
+        let editingScheduleId = null;
+        let scheduleViewMode = 'list'; // 'list' | 'table'
+
+        // Eski (ayrı) modüllerden kalan verileri (varsa) tek listeye taşır — bir kereye mahsus çalışır
+        function migrateLegacySchedule() {
+            if (scheduleItems.length > 0) return;
+            const hasLegacy = (typeof programItems !== 'undefined' && programItems.length) ||
+                               (typeof habits !== 'undefined' && habits.length);
+            if (!hasLegacy) return;
+
+            (programItems || []).forEach(p => {
+                scheduleItems.push({
+                    id: scheduleIdCounter++,
+                    time: p.time || '',
+                    name: p.task,
+                    target: 1,
+                    log: p.doneDate ? { [p.doneDate]: 1 } : {}
+                });
+            });
+            (habits || []).forEach(h => {
+                scheduleItems.push({
+                    id: scheduleIdCounter++,
+                    time: '',
+                    name: h.name,
+                    target: h.target || 1,
+                    log: h.log || {}
+                });
+            });
+
+            programItems = [];
+            habits = [];
+        }
+
+        function dateKeyFromDate(d) {
+            return d.toISOString().slice(0, 10);
+        }
+
+        function computeScheduleStreak(item) {
+            let streak = 0;
+            const cursor = new Date();
+            const todayKey = dateKeyFromDate(cursor);
+            if ((item.log[todayKey] || 0) < item.target) {
+                // Bugün henüz tamamlanmadı — bugünden değil dünden geriye say (streak henüz bozulmadı)
+                cursor.setDate(cursor.getDate() - 1);
+            }
+            while ((item.log[dateKeyFromDate(cursor)] || 0) >= item.target) {
+                streak++;
+                cursor.setDate(cursor.getDate() - 1);
+            }
+            return streak;
+        }
+
+        function saveScheduleItem() {
+            const time = document.getElementById('schedule-time').value;
+            const name = document.getElementById('schedule-name').value.trim();
+            const target = parseInt(document.getElementById('schedule-target').value) || 1;
+
+            if (!name) { alert('Ne olduğunu yazmalısın.'); return; }
+
+            if (editingScheduleId !== null) {
+                const item = scheduleItems.find(i => i.id === editingScheduleId);
+                if (item) {
+                    item.time = time;
+                    item.name = name;
+                    item.target = Math.max(1, target);
+                }
+                editingScheduleId = null;
+                document.getElementById('schedule-save-btn').innerText = 'Kaydet';
+            } else {
+                scheduleItems.push({ id: scheduleIdCounter++, time, name, target: Math.max(1, target), log: {} });
+            }
+
+            document.getElementById('schedule-time').value = '';
+            document.getElementById('schedule-name').value = '';
+            document.getElementById('schedule-target').value = '1';
+            renderSchedule();
+        }
+
+        function editScheduleItem(id) {
+            const item = scheduleItems.find(i => i.id === id);
+            if (!item) return;
+            document.getElementById('schedule-time').value = item.time || '';
+            document.getElementById('schedule-name').value = item.name;
+            document.getElementById('schedule-target').value = item.target;
+            editingScheduleId = id;
+            document.getElementById('schedule-save-btn').innerText = 'Güncelle';
+            document.getElementById('schedule-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function deleteScheduleItem(id) {
+            if (!confirm('Bu madde silinecek. Emin misin?')) return;
+            scheduleItems = scheduleItems.filter(i => i.id !== id);
+            if (editingScheduleId === id) {
+                editingScheduleId = null;
+                document.getElementById('schedule-save-btn').innerText = 'Kaydet';
+            }
+            renderSchedule();
+        }
+
+        function changeScheduleCount(id, delta) {
+            const item = scheduleItems.find(i => i.id === id);
+            if (!item) return;
+            const today = todayStr();
+            const current = item.log[today] || 0;
+            const next = Math.max(0, current + delta);
+            if (next === 0) {
+                delete item.log[today];
+            } else {
+                item.log[today] = next;
+            }
+            renderSchedule();
+        }
+
+        function toggleScheduleView() {
+            scheduleViewMode = scheduleViewMode === 'list' ? 'table' : 'list';
+            renderSchedule();
+        }
+
+        // Diğer modüllerdeki kayıtlı başlıkları toplayıp "modülden seç" listesi olarak sunar
+        function getScheduleSourceGroups() {
+            const groups = [];
+            const addGroup = (label, arr, field) => {
+                if (typeof arr !== 'undefined' && arr && arr.length) {
+                    const names = arr.map(item => item[field]).filter(v => v && v.trim());
+                    if (names.length) groups.push({ label, items: names });
+                }
+            };
+
+            addGroup('Fitness', typeof fitnessItems !== 'undefined' ? fitnessItems : null, 'title');
+            addGroup('Dövüş/Teknik', typeof combatItems !== 'undefined' ? combatItems : null, 'title');
+            addGroup('KPSS', typeof kpssUnits !== 'undefined' ? kpssUnits : null, 'name');
+            addGroup('YKS', typeof yksUnits !== 'undefined' ? yksUnits : null, 'name');
+            addGroup('Yabancı Dil', typeof langItems !== 'undefined' ? langItems : null, 'title');
+            addGroup('Tarif Defteri', typeof recipes !== 'undefined' ? recipes : null, 'title');
+            addGroup('Enstrüman', typeof instrumentItems !== 'undefined' ? instrumentItems : null, 'title');
+            addGroup('Tasarım', typeof tasarimItems !== 'undefined' ? tasarimItems : null, 'title');
+            addGroup('Kitap', typeof books !== 'undefined' ? books : null, 'title');
+
+            return groups;
+        }
+
+        function renderScheduleSourceSelect() {
+            const select = document.getElementById('schedule-source-select');
+            if (!select) return;
+            const groups = getScheduleSourceGroups();
+
+            if (!groups.length) {
+                select.innerHTML = '<option value="">Henüz başka modülde kayıt yok — elle yazabilirsin</option>';
+                return;
+            }
+
+            select.innerHTML = '<option value="">Ya da başka bir modülden seç...</option>' + groups.map(g => `
+                <optgroup label="${g.label}">
+                    ${g.items.map(item => `<option value="${item.replace(/"/g, '&quot;')}">${item}</option>`).join('')}
+                </optgroup>
+            `).join('');
+        }
+
+        function applyScheduleSourceSelection() {
+            const select = document.getElementById('schedule-source-select');
+            if (!select || !select.value) return;
+            document.getElementById('schedule-name').value = select.value;
+            select.value = '';
+        }
+
+        function renderScheduleCard(item) {
+            const today = todayStr();
+            const todayCount = item.log[today] || 0;
+            const streak = computeScheduleStreak(item);
+            const metToday = todayCount >= item.target;
+            const timeLabel = item.time ? `🕐 ${item.time} — ` : '';
+
+            return `
+            <div class="prayer-card ${metToday ? 'done-today' : ''}">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                    <strong>${timeLabel}${item.name}</strong>
+                    <span class="category-tag" style="background:rgba(241,196,15,0.15); border-color:rgba(241,196,15,0.4); color:var(--accent-gold);">🔥 ${streak} gün</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:6px;">
+                    <span style="font-size:0.85rem; color:var(--text-muted);">Bugün: ${todayCount} / ${item.target}</span>
+                    <div class="counter-group">
+                        <button class="btn-ctrl btn-minus" onclick="changeScheduleCount(${item.id}, -1)">-</button>
+                        <span class="counter-value">${todayCount}</span>
+                        <button class="btn-ctrl btn-plus" onclick="changeScheduleCount(${item.id}, 1)">+</button>
+                    </div>
+                </div>
+                <div class="recipe-actions" style="margin-top:8px;">
+                    <button class="btn-action" onclick="editScheduleItem(${item.id})">Düzenle</button>
+                    <button class="btn-action" style="color:var(--accent-red)" onclick="deleteScheduleItem(${item.id})">Sil</button>
+                </div>
+            </div>`;
+        }
+
+        function renderSchedule() {
+            renderScheduleSourceSelect();
+
+            const listSection = document.getElementById('schedule-list-section');
+            const tableWrap = document.getElementById('schedule-table-wrap');
+            const toggleBtn = document.getElementById('schedule-view-toggle');
+            const today = todayStr();
+
+            document.getElementById('schedule-count').innerText = scheduleItems.length + ' madde';
+
+            if (scheduleViewMode === 'table') {
+                listSection.style.display = 'none';
+                tableWrap.style.display = 'block';
+                toggleBtn.innerText = '📋 Liste Görünümü';
+            } else {
+                listSection.style.display = 'block';
+                tableWrap.style.display = 'none';
+                toggleBtn.innerText = '📊 Çizelge Görünümü';
+            }
+
+            const timed = scheduleItems.filter(i => i.time).sort((a, b) => a.time.localeCompare(b.time));
+            const untimed = scheduleItems.filter(i => !i.time).sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+
+            document.getElementById('schedule-timed-list').innerHTML = timed.length
+                ? timed.map(renderScheduleCard).join('')
+                : '<span style="color:var(--text-muted); font-size:0.85rem;">Henüz saatli madde eklenmedi.</span>';
+
+            document.getElementById('schedule-untimed-list').innerHTML = untimed.length
+                ? untimed.map(renderScheduleCard).join('')
+                : '<span style="color:var(--text-muted); font-size:0.85rem;">Henüz saatsiz alışkanlık eklenmedi.</span>';
+
+            if (scheduleViewMode === 'table') {
+                const all = [...timed, ...untimed];
+                const rowsHtml = all.map(i => {
+                    const todayCount = i.log[today] || 0;
+                    const streak = computeScheduleStreak(i);
+                    const metToday = todayCount >= i.target;
+                    return `
+                    <tr style="${metToday ? 'background:rgba(46,204,113,0.08);' : ''}">
+                        <td style="white-space:nowrap;">${i.time || '—'}</td>
+                        <td>${i.name}</td>
+                        <td style="text-align:center; white-space:nowrap;">${todayCount} / ${i.target}</td>
+                        <td style="text-align:center;">🔥 ${streak}</td>
+                        <td style="white-space:nowrap;">
+                            <button class="btn-action" style="padding:3px 8px; font-size:0.75rem;" onclick="changeScheduleCount(${i.id}, 1)">+1</button>
+                            <button class="btn-action" style="padding:3px 8px; font-size:0.75rem;" onclick="editScheduleItem(${i.id})">Düzenle</button>
+                            <button class="btn-action" style="padding:3px 8px; font-size:0.75rem; color:var(--accent-red)" onclick="deleteScheduleItem(${i.id})">Sil</button>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+                tableWrap.innerHTML = all.length ? `
+                    <table class="excel-table">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;">Saat</th>
+                                <th>Ad</th>
+                                <th style="width:90px; text-align:center;">Bugün</th>
+                                <th style="width:80px; text-align:center;">Streak</th>
+                                <th style="width:190px;">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>` : '<span style="color:var(--text-muted); font-size:0.85rem;">Henüz madde eklenmedi.</span>';
+            }
+        }
+
+
 
         // Sayfa ilk açıldığında kasayı hesapla ve tüm modülleri başlat
         // ================= TEKSTİL STOK TAKİBİ =================
@@ -3892,7 +4412,7 @@
             renderKpss();
         }
 
-        function harvestUnitForm(unitId) {
+        function harvestKpssUnitForm(unitId) {
             const unit = kpssUnits.find(u => u.id === unitId);
             if (!unit) return;
             for (let i = 0; i < 11; i++) {
@@ -3911,15 +4431,15 @@
             });
         }
 
-        function harvestAllOpenUnitForms() {
-            kpssUnits.forEach(u => { if (!u.saved) harvestUnitForm(u.id); });
+        function harvestAllOpenKpssUnitForms() {
+            kpssUnits.forEach(u => { if (!u.saved) harvestKpssUnitForm(u.id); });
         }
 
         function addKpssQuestion(unitId) {
             const unit = kpssUnits.find(u => u.id === unitId);
             if (!unit) return;
             if (unit.questions.length >= 40) { alert('En fazla 40 soru ekleyebilirsin.'); return; }
-            harvestUnitForm(unitId);
+            harvestKpssUnitForm(unitId);
             unit.questions.push({ id: kpssQuestionIdCounter++, text: '', options: ['', '', '', '', ''], correct: null });
             renderKpss();
         }
@@ -3927,13 +4447,13 @@
         function removeKpssQuestion(unitId, questionId) {
             const unit = kpssUnits.find(u => u.id === unitId);
             if (!unit) return;
-            harvestUnitForm(unitId);
+            harvestKpssUnitForm(unitId);
             unit.questions = unit.questions.filter(q => q.id !== questionId);
             renderKpss();
         }
 
         function saveKpssUnit(unitId) {
-            harvestUnitForm(unitId);
+            harvestKpssUnitForm(unitId);
             const unit = kpssUnits.find(u => u.id === unitId);
             if (!unit) return;
             unit.saved = true;
@@ -3944,6 +4464,75 @@
             const unit = kpssUnits.find(u => u.id === unitId);
             if (!unit) return;
             unit.saved = false;
+            renderKpss();
+        }
+
+        // --- Toplu yapıştırma: soruyu şıklarıyla birlikte tek metin olarak yapıştırıp otomatik ayrıştırma ---
+        function parseKpssQuestionText(unitId) {
+            const box = document.getElementById('bulk-question-' + unitId);
+            const raw = box.value;
+            if (!raw.trim()) { alert('Önce soru metnini yapıştır.'); return; }
+
+            const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== '');
+            const optionRegex = /^([A-Ea-e])[\)\.\-]\s*(.+)$/;
+            const answerRegex = /^(cevap|doğru cevap|dogru cevap)\s*[:\-]?/i;
+
+            let questionLines = [];
+            const options = ['', '', '', '', ''];
+            let correct = null;
+            let mode = 'question';
+
+            lines.forEach(line => {
+                if (answerRegex.test(line)) {
+                    const letterMatch = line.match(/[A-Ea-e]/);
+                    if (letterMatch) correct = letterMatch[0].toUpperCase().charCodeAt(0) - 65;
+                    return;
+                }
+                const optMatch = line.match(optionRegex);
+                if (optMatch) {
+                    const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65;
+                    if (idx >= 0 && idx < 5) options[idx] = optMatch[2].trim();
+                    mode = 'options';
+                    return;
+                }
+                if (mode === 'question') questionLines.push(line);
+            });
+
+            const questionText = questionLines.join(' ').trim();
+            if (!questionText) { alert('Soru metni ayrıştırılamadı. Format: önce soru cümlesi, sonra "A) ..." satırları.'); return; }
+
+            harvestKpssUnitForm(unitId);
+            const unit = kpssUnits.find(u => u.id === unitId);
+            if (!unit) return;
+            unit.questions.push({ id: kpssQuestionIdCounter++, text: questionText, options, correct });
+            box.value = '';
+            renderKpss();
+        }
+
+        // --- Toplu yapıştırma: "1. ... 2. ..." biçimindeki tüm teknikleri tek seferde ayrıştırıp doldurma ---
+        function parseKpssTechniqueText(unitId) {
+            const box = document.getElementById('bulk-technique-' + unitId);
+            const raw = box.value;
+            if (!raw.trim()) { alert('Önce teknik metnini yapıştır.'); return; }
+
+            const numberRegex = /(?:^|\n)\s*(\d{1,2})[\.\)]\s*/g;
+            const matches = [...raw.matchAll(numberRegex)];
+            if (!matches.length) { alert('Numaralandırılmış teknik bulunamadı. Format: "1. ... 2. ..."'); return; }
+
+            harvestKpssUnitForm(unitId);
+            const unit = kpssUnits.find(u => u.id === unitId);
+            if (!unit) return;
+
+            for (let i = 0; i < matches.length; i++) {
+                const num = parseInt(matches[i][1]);
+                if (num < 1 || num > 11) continue;
+                const start = matches[i].index + matches[i][0].length;
+                const end = i + 1 < matches.length ? matches[i + 1].index : raw.length;
+                const text = raw.slice(start, end).trim();
+                if (text) unit.techniques[num - 1] = text;
+            }
+
+            box.value = '';
             renderKpss();
         }
 
@@ -4056,8 +4645,18 @@
                 <strong>📝 ${unit.name} <span style="font-size:0.8rem; color:var(--text-muted);">(düzenleniyor)</span></strong>
                 <h4 style="font-size:0.85rem; color:var(--text-muted); margin:8px 0 4px 0;">11 Teknik</h4>
                 ${techniquesHtml}
+                <div style="margin:10px 0; padding:10px; border:1px dashed var(--accent-blue); border-radius:6px;">
+                    <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:6px;">Ya da tüm teknikleri tek seferde yapıştır (örn: "1. ... 2. ... 3. ...")</label>
+                    <textarea class="prayer-note" id="bulk-technique-${unit.id}" placeholder="1. İlk teknik metni...&#10;2. İkinci teknik metni...&#10;..."></textarea>
+                    <button class="btn-action btn-primary" style="margin-top:6px;" onclick="parseKpssTechniqueText(${unit.id})">Ayrıştır ve Doldur</button>
+                </div>
                 <h4 style="font-size:0.85rem; color:var(--text-muted); margin:12px 0 4px 0;">Soru - Cevap (${unit.questions.length}/40)</h4>
                 ${questionsHtml}
+                <div style="margin:10px 0; padding:10px; border:1px dashed var(--accent-gold); border-radius:6px;">
+                    <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:6px;">Ya da soruyu şıklarıyla birlikte tek seferde yapıştır</label>
+                    <textarea class="prayer-note" id="bulk-question-${unit.id}" placeholder="Soru metni...&#10;A) ...&#10;B) ...&#10;C) ...&#10;D) ...&#10;E) ...&#10;Cevap: B"></textarea>
+                    <button class="btn-action btn-primary" style="margin-top:6px;" onclick="parseKpssQuestionText(${unit.id})">Ayrıştır ve Ekle</button>
+                </div>
                 <button class="btn-action" onclick="addKpssQuestion(${unit.id})">+ Soru Ekle</button>
                 <button class="btn-action btn-primary" style="margin-top:10px;" onclick="saveKpssUnit(${unit.id})">Kaydet</button>
             </div>`;
@@ -4130,7 +4729,7 @@
         }
 
         function renderKpss() {
-            harvestAllOpenUnitForms();
+            harvestAllOpenKpssUnitForms();
             const wrap = document.getElementById('kpss-subjects-list');
             wrap.innerHTML = kpssSubjects.length
                 ? kpssSubjects.map(renderKpssSubjectCard).join('')
@@ -4205,7 +4804,7 @@
             renderYks();
         }
 
-        function harvestUnitForm(unitId) {
+        function harvestYksUnitForm(unitId) {
             const unit = yksUnits.find(u => u.id === unitId);
             if (!unit) return;
             for (let i = 0; i < 11; i++) {
@@ -4224,15 +4823,15 @@
             });
         }
 
-        function harvestAllOpenUnitForms() {
-            yksUnits.forEach(u => { if (!u.saved) harvestUnitForm(u.id); });
+        function harvestAllOpenYksUnitForms() {
+            yksUnits.forEach(u => { if (!u.saved) harvestYksUnitForm(u.id); });
         }
 
         function addYksQuestion(unitId) {
             const unit = yksUnits.find(u => u.id === unitId);
             if (!unit) return;
             if (unit.questions.length >= 40) { alert('En fazla 40 soru ekleyebilirsin.'); return; }
-            harvestUnitForm(unitId);
+            harvestYksUnitForm(unitId);
             unit.questions.push({ id: yksQuestionIdCounter++, text: '', options: ['', '', '', '', ''], correct: null });
             renderYks();
         }
@@ -4240,13 +4839,13 @@
         function removeYksQuestion(unitId, questionId) {
             const unit = yksUnits.find(u => u.id === unitId);
             if (!unit) return;
-            harvestUnitForm(unitId);
+            harvestYksUnitForm(unitId);
             unit.questions = unit.questions.filter(q => q.id !== questionId);
             renderYks();
         }
 
         function saveYksUnit(unitId) {
-            harvestUnitForm(unitId);
+            harvestYksUnitForm(unitId);
             const unit = yksUnits.find(u => u.id === unitId);
             if (!unit) return;
             unit.saved = true;
@@ -4257,6 +4856,75 @@
             const unit = yksUnits.find(u => u.id === unitId);
             if (!unit) return;
             unit.saved = false;
+            renderYks();
+        }
+
+        // --- Toplu yapıştırma: soruyu şıklarıyla birlikte tek metin olarak yapıştırıp otomatik ayrıştırma ---
+        function parseYksQuestionText(unitId) {
+            const box = document.getElementById('bulk-question-yks-' + unitId);
+            const raw = box.value;
+            if (!raw.trim()) { alert('Önce soru metnini yapıştır.'); return; }
+
+            const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== '');
+            const optionRegex = /^([A-Ea-e])[\)\.\-]\s*(.+)$/;
+            const answerRegex = /^(cevap|doğru cevap|dogru cevap)\s*[:\-]?/i;
+
+            let questionLines = [];
+            const options = ['', '', '', '', ''];
+            let correct = null;
+            let mode = 'question';
+
+            lines.forEach(line => {
+                if (answerRegex.test(line)) {
+                    const letterMatch = line.match(/[A-Ea-e]/);
+                    if (letterMatch) correct = letterMatch[0].toUpperCase().charCodeAt(0) - 65;
+                    return;
+                }
+                const optMatch = line.match(optionRegex);
+                if (optMatch) {
+                    const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65;
+                    if (idx >= 0 && idx < 5) options[idx] = optMatch[2].trim();
+                    mode = 'options';
+                    return;
+                }
+                if (mode === 'question') questionLines.push(line);
+            });
+
+            const questionText = questionLines.join(' ').trim();
+            if (!questionText) { alert('Soru metni ayrıştırılamadı. Format: önce soru cümlesi, sonra "A) ..." satırları.'); return; }
+
+            harvestYksUnitForm(unitId);
+            const unit = yksUnits.find(u => u.id === unitId);
+            if (!unit) return;
+            unit.questions.push({ id: yksQuestionIdCounter++, text: questionText, options, correct });
+            box.value = '';
+            renderYks();
+        }
+
+        // --- Toplu yapıştırma: "1. ... 2. ..." biçimindeki tüm teknikleri tek seferde ayrıştırıp doldurma ---
+        function parseYksTechniqueText(unitId) {
+            const box = document.getElementById('bulk-technique-yks-' + unitId);
+            const raw = box.value;
+            if (!raw.trim()) { alert('Önce teknik metnini yapıştır.'); return; }
+
+            const numberRegex = /(?:^|\n)\s*(\d{1,2})[\.\)]\s*/g;
+            const matches = [...raw.matchAll(numberRegex)];
+            if (!matches.length) { alert('Numaralandırılmış teknik bulunamadı. Format: "1. ... 2. ..."'); return; }
+
+            harvestYksUnitForm(unitId);
+            const unit = yksUnits.find(u => u.id === unitId);
+            if (!unit) return;
+
+            for (let i = 0; i < matches.length; i++) {
+                const num = parseInt(matches[i][1]);
+                if (num < 1 || num > 11) continue;
+                const start = matches[i].index + matches[i][0].length;
+                const end = i + 1 < matches.length ? matches[i + 1].index : raw.length;
+                const text = raw.slice(start, end).trim();
+                if (text) unit.techniques[num - 1] = text;
+            }
+
+            box.value = '';
             renderYks();
         }
 
@@ -4369,8 +5037,18 @@
                 <strong>📝 ${unit.name} <span style="font-size:0.8rem; color:var(--text-muted);">(düzenleniyor)</span></strong>
                 <h4 style="font-size:0.85rem; color:var(--text-muted); margin:8px 0 4px 0;">11 Teknik</h4>
                 ${techniquesHtml}
+                <div style="margin:10px 0; padding:10px; border:1px dashed var(--accent-blue); border-radius:6px;">
+                    <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:6px;">Ya da tüm teknikleri tek seferde yapıştır (örn: "1. ... 2. ... 3. ...")</label>
+                    <textarea class="prayer-note" id="bulk-technique-yks-${unit.id}" placeholder="1. İlk teknik metni...&#10;2. İkinci teknik metni...&#10;..."></textarea>
+                    <button class="btn-action btn-primary" style="margin-top:6px;" onclick="parseYksTechniqueText(${unit.id})">Ayrıştır ve Doldur</button>
+                </div>
                 <h4 style="font-size:0.85rem; color:var(--text-muted); margin:12px 0 4px 0;">Soru - Cevap (${unit.questions.length}/40)</h4>
                 ${questionsHtml}
+                <div style="margin:10px 0; padding:10px; border:1px dashed var(--accent-gold); border-radius:6px;">
+                    <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:6px;">Ya da soruyu şıklarıyla birlikte tek seferde yapıştır</label>
+                    <textarea class="prayer-note" id="bulk-question-yks-${unit.id}" placeholder="Soru metni...&#10;A) ...&#10;B) ...&#10;C) ...&#10;D) ...&#10;E) ...&#10;Cevap: B"></textarea>
+                    <button class="btn-action btn-primary" style="margin-top:6px;" onclick="parseYksQuestionText(${unit.id})">Ayrıştır ve Ekle</button>
+                </div>
                 <button class="btn-action" onclick="addYksQuestion(${unit.id})">+ Soru Ekle</button>
                 <button class="btn-action btn-primary" style="margin-top:10px;" onclick="saveYksUnit(${unit.id})">Kaydet</button>
             </div>`;
@@ -4443,7 +5121,7 @@
         }
 
         function renderYks() {
-            harvestAllOpenUnitForms();
+            harvestAllOpenYksUnitForms();
             const wrap = document.getElementById('yks-subjects-list');
             wrap.innerHTML = yksSubjects.length
                 ? yksSubjects.map(renderYksSubjectCard).join('')
@@ -5305,7 +5983,7 @@
 
         // Tüm render fonksiyonları çalıştığında (yani her ekleme/silme/düzenleme/kaydetme işleminden sonra)
         // güncel veriyi otomatik olarak kalıcı depoya yazacak şekilde sarmalıyoruz.
-        ['renderTabCard','renderKiraathane','renderCategories','renderCategoryOptions','renderRecipes','renderLangCategories','renderLangCategoryOptions','renderLangItems','renderCombatCategories','renderCombatCategoryOptions','renderCombatItems','renderInstrumentCategories','renderInstrumentCategoryOptions','renderInstrumentItems','renderFitnessCategories','renderFitnessCategoryOptions','renderFitnessItems','renderSporVariants','renderSporItems','renderSpor','renderIbadet','renderTekstilCategories','renderTekstilCategoryOptions','renderTekstilProductCard','renderTekstil','renderAracCategoryTags','renderAracItemCard','renderAracList','renderAracCategorySummary','renderArac','renderEtTypeTags','renderEtMachines','renderEtSummary','renderEtSalesList','renderEt','renderManavTypeTags','renderManavSummary','renderManavSalesList','renderManav','renderSutTypeTags','renderSutSummary','renderSutSalesList','renderSut','renderKpssQuiz','renderKpssUnitEditForm','renderKpssUnitSummary','renderKpssUnitCard','renderKpssTopicCard','renderKpssSubjectCard','renderKpss','renderYksQuiz','renderYksUnitEditForm','renderYksUnitSummary','renderYksUnitCard','renderYksTopicCard','renderYksSubjectCard','renderYks','renderBlogReadingView','renderBlogEditForm','renderBlogSummary','renderBlog','renderTarlaList','renderHasatList','renderSulamaList','renderTohumTypeTags','renderTohumSummary','renderBelgeList','renderHavaList','renderTarim','renderCariCustomerOptions','renderCariCustomerList','renderCari','renderTeknolojiCategoryTags','renderTeknolojiItemCard','renderTeknolojiList','renderTeknolojiCategorySummary','renderTeknoloji','renderYazilimTaskEditForm','renderYazilimTaskSummary','renderYazilimTaskCard','renderYazilimProjectCard','renderYazilimCategoryCard','renderYazilim','renderYatirimCategoryTags','renderYatirimItemCard','renderYatirimList','renderYatirim'].forEach(function(fnName) {
+        ['renderTabCard','renderKiraathane','renderCategories','renderCategoryOptions','renderRecipes','renderLangCategories','renderLangCategoryOptions','renderLangItems','renderCombatCategories','renderCombatCategoryOptions','renderCombatItems','renderInstrumentCategories','renderInstrumentCategoryOptions','renderInstrumentItems','renderFitnessCategories','renderFitnessCategoryOptions','renderFitnessItems','renderSporVariants','renderSporItems','renderSpor','renderIbadet','renderTekstilCategories','renderTekstilCategoryOptions','renderTekstilProductCard','renderTekstil','renderAracCategoryTags','renderAracItemCard','renderAracList','renderAracCategorySummary','renderArac','renderEtTypeTags','renderEtMachines','renderEtSummary','renderEtSalesList','renderEt','renderManavTypeTags','renderManavSummary','renderManavSalesList','renderManav','renderSutTypeTags','renderSutSummary','renderSutSalesList','renderSut','renderKpssQuiz','renderKpssUnitEditForm','renderKpssUnitSummary','renderKpssUnitCard','renderKpssTopicCard','renderKpssSubjectCard','renderKpss','renderYksQuiz','renderYksUnitEditForm','renderYksUnitSummary','renderYksUnitCard','renderYksTopicCard','renderYksSubjectCard','renderYks','renderBlogReadingView','renderBlogEditForm','renderBlogSummary','renderBlog','renderTarlaList','renderHasatList','renderSulamaList','renderTohumTypeTags','renderTohumSummary','renderBelgeList','renderHavaList','renderTarim','renderCariCustomerOptions','renderCariCustomerList','renderCari','renderTeknolojiCategoryTags','renderTeknolojiItemCard','renderTeknolojiList','renderTeknolojiCategorySummary','renderTeknoloji','renderYazilimTaskEditForm','renderYazilimTaskSummary','renderYazilimTaskCard','renderYazilimProjectCard','renderYazilimCategoryCard','renderYazilim','renderYatirimCategoryTags','renderYatirimItemCard','renderYatirimList','renderYatirim','renderGayrimenkul','renderTasarimCategories','renderTasarimCategoryOptions','renderTasarim','renderScheduleCard','renderSchedule'].forEach(function(fnName) {
             const original = window[fnName];
             if (typeof original === 'function') {
                 window[fnName] = function() {
@@ -5507,6 +6185,7 @@
         // kaydedilmiş veri yüklendikten sonra tekrar çizim için kullanılır).
         function renderAllModules() {
             renderIbadet();
+            renderSchedule();
             renderFitnessCategories();
             renderFitnessCategoryOptions();
             renderFitnessItems();
@@ -5523,6 +6202,7 @@
             renderInstrumentCategories();
             renderInstrumentCategoryOptions();
             renderInstrumentItems();
+            renderTasarim();
             renderTarim();
             renderBlog();
             renderYazilim();
